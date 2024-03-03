@@ -1,5 +1,5 @@
 //
-//  StoryView.swift
+//  StoryRowView.swift
 //  QuizXguide
 //
 //  Created by Aleksandr Ataev on 26.02.2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StoryView: View {
+struct StoryRowView: View {
 
     @EnvironmentObject var storyVM: StoryViewModel
 
@@ -65,7 +65,7 @@ extension UserDefaults {
 #Preview {
     ZStack {
         AppBackgroundView()
-        StoryView()
+        StoryRowView()
             .environmentObject(StoryViewModel())
     }
 }

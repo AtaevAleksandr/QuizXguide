@@ -29,7 +29,7 @@ struct SignalsView: View {
                 GeometryReader { geo in
                     ScrollView(showsIndicators: false) {
                         VStack {
-                            Text("The next signal is via:")
+                            Text("The next signals is via:")
                                 .font(.system(size: 18, weight: .bold))
                                 .foregroundStyle(Color.theme.customGray)
 

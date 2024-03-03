@@ -27,12 +27,12 @@ struct HomeView: View {
                 AppBackgroundView()
 
                 VStack {
-                    StoryView()
+                    StoryRowView()
 
                     Spacer()
                     
                     VStack {
-                        Text("The next signal is via:")
+                        Text("The next lesson is via:")
                             .font(.system(size: 18, weight: .bold))
                             .foregroundStyle(Color.theme.customGray)
 
