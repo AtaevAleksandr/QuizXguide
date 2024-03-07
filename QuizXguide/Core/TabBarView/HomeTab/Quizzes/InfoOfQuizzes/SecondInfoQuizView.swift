@@ -17,10 +17,10 @@ struct SecondInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
-
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    
     @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
@@ -168,10 +168,10 @@ extension SecondInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizTwoCompleted {
-                    isQuizTwoCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Why Do Currency Rates Change?"))
+                isQuizTwoCompleted = true
+                if !openedFromArchive {
                     homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 2, title: "Why Do Currency Rates Change?"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -198,7 +198,7 @@ extension SecondInfoQuizView {
     }
 }
 
-#Preview {
-    SecondInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    SecondInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

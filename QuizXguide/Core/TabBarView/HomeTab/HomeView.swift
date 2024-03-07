@@ -23,17 +23,6 @@ struct HomeView: View {
     @AppStorage("isQuizTwelveCompleted") var isQuizTwelveCompleted: Bool = false
     @AppStorage("isQuizThirteenCompleted") var isQuizThirteenCompleted: Bool = false
 
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
-    @State private var timeRemaining: String = ""
-    @State var isTimeOut: Bool = false
-
-    @State private var nextUpdateTime: Date = {
-        let calendar = Calendar.current
-        let endTime = calendar.date(byAdding: .second, value: 15, to: Date()) ?? Date()
-        return endTime
-    }()
-
     @EnvironmentObject var storyVM: StoryViewModel
     @EnvironmentObject var homeVM: HomeViewModel
 
@@ -77,49 +66,40 @@ struct HomeView: View {
                 }
                 .padding()
             }
-            .onReceive(timer) { _ in
-                withAnimation(.linear(duration: 0.5)) {
-                    DispatchQueue.main.async {
-                        updateTimeRemaining()
-                    }
-                }
-            }
             .onAppear {
-                withAnimation(.linear(duration: 0.5)) {
-                    DispatchQueue.main.async {
-                        updateTimeRemaining()
-                    }
+                if isQuizThirteenCompleted {
+                    homeVM.states = .allCompleted
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { title }
             .fullScreenCover(isPresented: $isStartQuiz) {
                 if isQuizTwelveCompleted {
-                    ThirteenthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    ThirteenthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizElevenCompleted {
-                    TwelfthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    TwelfthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizTenCompleted {
-                    EleventhInfoQuizView(isStartQuiz: $isStartQuiz)
+                    EleventhInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizNineCompleted {
-                    TenthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    TenthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizEightCompleted {
-                    NinthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    NinthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizSevenCompleted {
-                    EighthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    EighthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizSixCompleted {
-                    SeventhInfoQuizView(isStartQuiz: $isStartQuiz)
+                    SeventhInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizFiveCompleted {
-                    SixthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    SixthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizFourCompleted {
-                    FifthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    FifthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizThreeCompleted {
-                    FourthInfoQuizView(isStartQuiz: $isStartQuiz)
+                    FourthInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizTwoCompleted {
-                    ThirdInfoQuizView(isStartQuiz: $isStartQuiz)
+                    ThirdInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else if isQuizOneCompleted {
-                    SecondInfoQuizView(isStartQuiz: $isStartQuiz)
+                    SecondInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 } else {
-                    FirstInfoQuizView(isStartQuiz: $isStartQuiz)
+                    FirstInfoQuizView(isStartQuiz: $isStartQuiz, openedFromArchive: .constant(false))
                 }
             }
 
@@ -132,26 +112,6 @@ struct HomeView: View {
             StoryDetailView()
                 .environmentObject(storyVM)
         }
-    }
-
-    //MARK: FUNCTIONS
-    func updateTimeRemaining() {
-        let currentTime = Date()
-        let calendar = Calendar.current
-
-        let remaining = calendar.dateComponents([.minute, .second], from: currentTime, to: nextUpdateTime)
-        if let minute = remaining.minute, let second = remaining.second {
-            if minute <= 0 && second <= 0 {
-                stopTimer()
-            } else {
-                timeRemaining = String(format: "%02d:%02d", max(0, minute), max(0, second))
-            }
-        }
-    }
-
-    func stopTimer() {
-        isTimeOut = true
-        timer.upstream.connect().cancel()
     }
 }
 
@@ -177,10 +137,10 @@ extension HomeView {
                     .frame(maxWidth: .infinity)
                     .background(Color.theme.customPurple)
                     .cornerRadius(12)
-                    .opacity(!homeVM.startEnable ? 0.5 : 1)
+                    .opacity(!homeVM.startEnable || isQuizThirteenCompleted ? 0.5 : 1)
                     .animation(nil, value: UUID())
             }
-            .disabled(!homeVM.startEnable)
+            .disabled(!homeVM.startEnable || isQuizThirteenCompleted)
 
             Button {
                 isShowArchive.toggle()
@@ -196,13 +156,10 @@ extension HomeView {
         }
         .padding(.bottom)
     }
-
-
 }
 
 #Preview {
     HomeView()
         .environmentObject(StoryViewModel())
-        .environmentObject(QuizArchiveViewModel())
         .environmentObject(HomeViewModel())
 }

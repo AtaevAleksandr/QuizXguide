@@ -15,7 +15,7 @@ struct ArchiveLessonsView: View {
 
     @Binding var showArchive: Bool
 
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     @State var showQuizOne: Bool = false
     @State var showQuizTwo: Bool = false
@@ -37,41 +37,44 @@ struct ArchiveLessonsView: View {
                 AppBackgroundView()
 
                 ScrollView(.vertical, showsIndicators: false) {
-                    ForEach(arhiveViewModel.quizzesArchive.indices, id: \.self) { index in
+                    ForEach(homeVM.quizModel, id: \.self) { model in
 
-                        let lesson = arhiveViewModel.quizzesArchive[index]
+                        let lesson = homeVM.quizModel.first(where: { $0.id == model.id }) ?? QuizModel(id: 99, title: "Test")
 
-                        HStack(spacing: 30) {
-                            Text("\(index + 1)")
+                        HStack {
+                            Text("\(model.id)")
                                 .font(.system(size: 18, weight: .bold))
+                                .frame(width: 40, alignment: .leading)
+
+                            Spacer()
 
                             Button {
-                                switch index {
-                                case 0:
-                                    showQuizOne = true
+                                switch model.id {
                                 case 1:
-                                    showQuizTwo = true
+                                    showQuizOne = true
                                 case 2:
-                                    showQuizThree = true
+                                    showQuizTwo = true
                                 case 3:
-                                    showQuizFour = true
+                                    showQuizThree = true
                                 case 4:
-                                    showQuizFive = true
+                                    showQuizFour = true
                                 case 5:
-                                    showQuizSix = true
+                                    showQuizFive = true
                                 case 6:
-                                    showQuizSeven = true
+                                    showQuizSix = true
                                 case 7:
-                                    showQuizEight = true
+                                    showQuizSeven = true
                                 case 8:
-                                    showQuizNine = true
+                                    showQuizEight = true
                                 case 9:
-                                    showQuizTen = true
+                                    showQuizNine = true
                                 case 10:
-                                    showQuizEleven = true
+                                    showQuizTen = true
                                 case 11:
-                                    showQuizTwelve = true
+                                    showQuizEleven = true
                                 case 12:
+                                    showQuizTwelve = true
+                                case 13:
                                     showQuizThirteen = true
                                 default:
                                     break
@@ -80,6 +83,7 @@ struct ArchiveLessonsView: View {
                                 Text(lesson.title)
                                     .font(.system(size: 16, weight: .regular))
                                     .frame(maxWidth: .infinity, alignment: .leading)
+                                    .multilineTextAlignment(.leading)
                                     .frame(height: 46)
                                     .padding(.horizontal)
                                     .background(Color.theme.yesButton)
@@ -92,49 +96,52 @@ struct ArchiveLessonsView: View {
                     }
                 }
             }
+            .onAppear {
+                homeVM.fillView()
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 title
                 dismissButton
             }
             .fullScreenCover(isPresented: $showQuizOne) {
-                FirstInfoQuizView(isStartQuiz: $showQuizOne)
+                FirstInfoQuizView(isStartQuiz: $showQuizOne, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizTwo) {
-                SecondInfoQuizView(isStartQuiz: $showQuizTwo)
+                SecondInfoQuizView(isStartQuiz: $showQuizTwo, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizThree) {
-                ThirdInfoQuizView(isStartQuiz: $showQuizThree)
+                ThirdInfoQuizView(isStartQuiz: $showQuizThree, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizFour) {
-                FourthInfoQuizView(isStartQuiz: $showQuizFour)
+                FourthInfoQuizView(isStartQuiz: $showQuizFour, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizFive) {
-                FifthInfoQuizView(isStartQuiz: $showQuizFive)
+                FifthInfoQuizView(isStartQuiz: $showQuizFive, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizSix) {
-                SixthInfoQuizView(isStartQuiz: $showQuizSix)
+                SixthInfoQuizView(isStartQuiz: $showQuizSix, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizSeven) {
-                SeventhInfoQuizView(isStartQuiz: $showQuizSeven)
+                SeventhInfoQuizView(isStartQuiz: $showQuizSeven, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizEight) {
-                EighthInfoQuizView(isStartQuiz: $showQuizEight)
+                EighthInfoQuizView(isStartQuiz: $showQuizEight, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizNine) {
-                NinthInfoQuizView(isStartQuiz: $showQuizNine)
+                NinthInfoQuizView(isStartQuiz: $showQuizNine, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizTen) {
-                TenthInfoQuizView(isStartQuiz: $showQuizTen)
+                TenthInfoQuizView(isStartQuiz: $showQuizTen, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizEleven) {
-                EleventhInfoQuizView(isStartQuiz: $showQuizEleven)
+                EleventhInfoQuizView(isStartQuiz: $showQuizEleven, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizTwelve) {
-                TwelfthInfoQuizView(isStartQuiz: $showQuizTwelve)
+                TwelfthInfoQuizView(isStartQuiz: $showQuizTwelve, openedFromArchive: .constant(true))
             }
             .fullScreenCover(isPresented: $showQuizThirteen) {
-                ThirteenthInfoQuizView(isStartQuiz: $showQuizThirteen)
+                ThirteenthInfoQuizView(isStartQuiz: $showQuizThirteen, openedFromArchive: .constant(true))
             }
         }
         .navigationViewStyle(.stack)
@@ -166,7 +173,7 @@ extension ArchiveLessonsView {
     }
 }
 
-#Preview {
-    ArchiveLessonsView(showArchive: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    ArchiveLessonsView(showArchive: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

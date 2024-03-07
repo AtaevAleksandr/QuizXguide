@@ -17,10 +17,10 @@ struct FourthInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
-
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    
     @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
@@ -163,10 +163,10 @@ extension FourthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizFourCompleted {
-                    isQuizFourCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Word of Warning to Forex Traders"))
+                isQuizFourCompleted = true
+                if !openedFromArchive {
                     homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 4, title: "Word of Warning to Forex Traders"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -193,7 +193,7 @@ extension FourthInfoQuizView {
     }
 }
 
-#Preview {
-    FourthInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    FourthInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

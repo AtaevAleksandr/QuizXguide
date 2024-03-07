@@ -17,10 +17,11 @@ struct EleventhInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
 
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -174,9 +175,10 @@ extension EleventhInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizElevenCompleted {
-                    isQuizElevenCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Margin and Leverage"))
+                isQuizElevenCompleted = true
+                if !openedFromArchive {
+                    homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 11, title: "Margin and Leverage"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -189,7 +191,7 @@ extension EleventhInfoQuizView {
     }
 }
 
-#Preview {
-    EleventhInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    EleventhInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

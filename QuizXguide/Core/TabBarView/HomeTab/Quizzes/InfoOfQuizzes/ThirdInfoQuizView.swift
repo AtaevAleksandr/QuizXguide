@@ -17,10 +17,10 @@ struct ThirdInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
-
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    
     @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
@@ -193,10 +193,10 @@ extension ThirdInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizThreeCompleted {
-                    isQuizThreeCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Why Trade Forex?"))
+                isQuizThreeCompleted = true
+                if !openedFromArchive {
                     homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 3, title: "Why Trade Forex?"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -209,7 +209,7 @@ extension ThirdInfoQuizView {
     }
 }
 
-#Preview {
-    ThirdInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    ThirdInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

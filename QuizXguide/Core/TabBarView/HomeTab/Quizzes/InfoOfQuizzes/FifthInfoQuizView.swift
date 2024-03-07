@@ -17,10 +17,9 @@ struct FifthInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
-
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
     @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
@@ -270,10 +269,10 @@ extension FifthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizFiveCompleted {
-                    isQuizFiveCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Detailed View on Currency Pairs"))
+                isQuizFiveCompleted = true
+                if !openedFromArchive {
                     homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 5, title: "Detailed View on Currency Pairs"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -300,7 +299,7 @@ extension FifthInfoQuizView {
     }
 }
 
-#Preview {
-    FifthInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    FifthInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

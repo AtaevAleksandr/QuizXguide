@@ -17,10 +17,10 @@ struct SixthInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
 
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
     @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
@@ -222,10 +222,10 @@ extension SixthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizSixCompleted {
-                    isQuizSixCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Forex Market Structure"))
+                isQuizSixCompleted = true
+                if !openedFromArchive {
                     homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 6, title: "Forex Market Structure"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -238,7 +238,7 @@ extension SixthInfoQuizView {
     }
 }
 
-#Preview {
-    SixthInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    SixthInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

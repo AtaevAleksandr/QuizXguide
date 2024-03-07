@@ -17,10 +17,10 @@ struct EighthInfoQuizView: View {
     @State var startOffset: CGFloat = 0
 
     @Binding var isStartQuiz: Bool
+    @Binding var openedFromArchive: Bool
 
     @State var startGame: Bool = false
-
-    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -155,9 +155,10 @@ extension EighthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
-                if !isQuizEightCompleted {
-                    isQuizEightCompleted = true
-                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "How Is Money Made in Forex?"))
+                isQuizEightCompleted = true
+                if !openedFromArchive {
+                    homeVM.goToTimer()
+                    homeVM.append(QuizModel(id: 8, title: "How Is Money Made in Forex?"))
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -184,7 +185,7 @@ extension EighthInfoQuizView {
     }
 }
 
-#Preview {
-    EighthInfoQuizView(isStartQuiz: .constant(false))
-        .environmentObject(QuizArchiveViewModel())
-}
+//#Preview {
+//    EighthInfoQuizView(isStartQuiz: .constant(false))
+//        .environmentObject(QuizArchiveViewModel())
+//}

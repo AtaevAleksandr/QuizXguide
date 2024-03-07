@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct QuizModel: Identifiable, Codable {
-    let id: UUID
+struct QuizModel: Identifiable, Codable, Hashable {
+    let id: Int
     let title: String
 }
