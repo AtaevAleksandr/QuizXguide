@@ -9,10 +9,19 @@ import SwiftUI
 
 struct ThirdInfoQuizView: View {
 
+    @AppStorage("isQuizThreeCompleted") var isQuizThreeCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -107,7 +116,7 @@ struct ThirdInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -162,6 +171,9 @@ struct ThirdInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                ThirdQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -181,6 +193,11 @@ extension ThirdInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizThreeCompleted {
+                    isQuizThreeCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Why Trade Forex?"))
+                    homeVM.goToTimer()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -193,5 +210,6 @@ extension ThirdInfoQuizView {
 }
 
 #Preview {
-    ThirdInfoQuizView()
+    ThirdInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }

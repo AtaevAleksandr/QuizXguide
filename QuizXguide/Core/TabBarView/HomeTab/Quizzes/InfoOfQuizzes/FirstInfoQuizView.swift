@@ -9,10 +9,18 @@ import SwiftUI
 
 struct FirstInfoQuizView: View {
 
+    @AppStorage("isQuizOneCompleted") var isQuizOneCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -134,7 +142,7 @@ struct FirstInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -178,7 +186,7 @@ struct FirstInfoQuizView: View {
 
                                 return Color.clear
                             }
-                            .frame(width: 0, height: 0)
+                                .frame(width: 0, height: 0)
                             , alignment: .top
                         )
                     }
@@ -188,6 +196,9 @@ struct FirstInfoQuizView: View {
             .toolbar {
                 title
                 dismissButton
+            }
+            .fullScreenCover(isPresented: $startGame) {
+                FirstQuizGameView(isShowQuizGame: $startGame)
             }
         }
         .navigationViewStyle(.stack)
@@ -208,6 +219,12 @@ extension FirstInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizOneCompleted {
+                    isQuizOneCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "What Is Forex Trading?"))
+                    
+                    homeVM.goToTimer()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -220,5 +237,7 @@ extension FirstInfoQuizView {
 }
 
 #Preview {
-    FirstInfoQuizView()
+    FirstInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
+        .environmentObject(HomeViewModel())
 }

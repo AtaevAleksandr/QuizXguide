@@ -47,4 +47,6 @@ struct TabBarView: View {
         .preferredColorScheme(.dark)
         .environmentObject(SignalViewModel())
         .environmentObject(StoryViewModel())
+        .environmentObject(QuizArchiveViewModel())
+        .environmentObject(HomeViewModel())
 }

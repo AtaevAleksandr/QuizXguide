@@ -9,10 +9,18 @@ import SwiftUI
 
 struct TwelfthInfoQuizView: View {
 
+    @AppStorage("isQuizTwelveCompleted") var isQuizTwelveCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
 
     var body: some View {
         NavigationView {
@@ -116,7 +124,7 @@ struct TwelfthInfoQuizView: View {
                             
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -171,6 +179,9 @@ struct TwelfthInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                TwelfthQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -190,6 +201,10 @@ extension TwelfthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizTwelveCompleted {
+                    isQuizTwelveCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Trading Orders"))
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -202,5 +217,6 @@ extension TwelfthInfoQuizView {
 }
 
 #Preview {
-    TwelfthInfoQuizView()
+    TwelfthInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }

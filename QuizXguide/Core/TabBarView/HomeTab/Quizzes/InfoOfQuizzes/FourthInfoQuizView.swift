@@ -9,10 +9,19 @@ import SwiftUI
 
 struct FourthInfoQuizView: View {
 
+    @AppStorage("isQuizFourCompleted") var isQuizFourCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -76,7 +85,7 @@ struct FourthInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -131,6 +140,9 @@ struct FourthInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                FourthQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -151,6 +163,11 @@ extension FourthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizFourCompleted {
+                    isQuizFourCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Word of Warning to Forex Traders"))
+                    homeVM.goToTimer()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -162,20 +179,21 @@ extension FourthInfoQuizView {
     }
 
     private func adaptiveFontSize() -> Font {
-            let screenWidth = UIScreen.main.bounds.size.width
-            let screenHeight = UIScreen.main.bounds.size.height
-            let screenSize = min(screenWidth, screenHeight)
+        let screenWidth = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        let screenSize = min(screenWidth, screenHeight)
 
-            if screenSize < 350 {
-                return .system(size: 16, weight: .bold)
-            } else if screenSize < 380 {
-                return .system(size: 20, weight: .bold)
-            } else {
-                return .system(size: 24, weight: .bold)
-            }
+        if screenSize < 350 {
+            return .system(size: 16, weight: .bold)
+        } else if screenSize < 380 {
+            return .system(size: 20, weight: .bold)
+        } else {
+            return .system(size: 24, weight: .bold)
         }
+    }
 }
 
 #Preview {
-    FourthInfoQuizView()
+    FourthInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }

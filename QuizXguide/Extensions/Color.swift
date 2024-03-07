@@ -22,4 +22,5 @@ struct ColorTheme {
     let customGreen: Color = Color("CustomGreenColor")
     let customRed: Color = Color("CustomRedColor")
     let textGray: Color = Color("TextGrayColor")
+    let yesButton: Color = Color("YesButtonColor")
 }

@@ -9,10 +9,18 @@ import SwiftUI
 
 struct ThirteenthInfoQuizView: View {
 
+    @AppStorage("isQuizThirteenCompleted") var isQuizThirteenCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
 
     var body: some View {
         NavigationView {
@@ -124,7 +132,7 @@ struct ThirteenthInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -179,6 +187,9 @@ struct ThirteenthInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                ThirteenthQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -198,6 +209,10 @@ extension ThirteenthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizThirteenCompleted {
+                    isQuizThirteenCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Demo Trading"))
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -210,5 +225,6 @@ extension ThirteenthInfoQuizView {
 }
 
 #Preview {
-    ThirteenthInfoQuizView()
+    ThirteenthInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }

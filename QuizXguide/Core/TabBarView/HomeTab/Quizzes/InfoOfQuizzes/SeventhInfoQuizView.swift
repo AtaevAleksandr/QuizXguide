@@ -9,10 +9,19 @@ import SwiftUI
 
 struct SeventhInfoQuizView: View {
 
+    @AppStorage("isQuizSevenCompleted") var isQuizSevenCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
+    @EnvironmentObject var homeVM: HomeViewModel
 
     var body: some View {
         NavigationView {
@@ -129,7 +138,7 @@ struct SeventhInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -184,6 +193,9 @@ struct SeventhInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                SeventhQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -203,6 +215,11 @@ extension SeventhInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizSevenCompleted {
+                    isQuizSevenCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "Trading Sessions"))
+                    homeVM.goToTimer()
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -215,5 +232,6 @@ extension SeventhInfoQuizView {
 }
 
 #Preview {
-    SeventhInfoQuizView()
+    SeventhInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }

@@ -9,10 +9,18 @@ import SwiftUI
 
 struct EighthInfoQuizView: View {
 
+    @AppStorage("isQuizEightCompleted") var isQuizEightCompleted: Bool = false
+
     @Environment(\.dismiss) var dismiss
 
     @State var scrollViewOffset: CGFloat = 0
     @State var startOffset: CGFloat = 0
+
+    @Binding var isStartQuiz: Bool
+
+    @State var startGame: Bool = false
+
+    @EnvironmentObject var arhiveViewModel: QuizArchiveViewModel
 
     var body: some View {
         NavigationView {
@@ -69,7 +77,7 @@ struct EighthInfoQuizView: View {
 
                             HStack {
                                 Button {
-
+                                    startGame.toggle()
                                 } label: {
                                     Text("Go Quiz")
                                         .font(.system(size: 16, weight: .semibold))
@@ -124,6 +132,9 @@ struct EighthInfoQuizView: View {
                 title
                 dismissButton
             }
+            .fullScreenCover(isPresented: $startGame) {
+                EighthQuizGameView(isShowQuizGame: $startGame)
+            }
         }
         .navigationViewStyle(.stack)
     }
@@ -144,6 +155,10 @@ extension EighthInfoQuizView {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 dismiss()
+                if !isQuizEightCompleted {
+                    isQuizEightCompleted = true
+                    arhiveViewModel.quizzesArchive.append(QuizModel(id: UUID(), title: "How Is Money Made in Forex?"))
+                }
             } label: {
                 Image(systemName: "xmark")
                     .resizable()
@@ -170,5 +185,6 @@ extension EighthInfoQuizView {
 }
 
 #Preview {
-    EighthInfoQuizView()
+    EighthInfoQuizView(isStartQuiz: .constant(false))
+        .environmentObject(QuizArchiveViewModel())
 }
